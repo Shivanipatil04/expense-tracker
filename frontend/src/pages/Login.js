@@ -1,12 +1,13 @@
+// Login.js
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../api/api";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,17 +15,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login form submitted:", formData);
 
     try {
       const response = await axios.post(`${BASE_URL}/api/auth/login`, formData);
-      console.log("Login Successful:", response.data);
       localStorage.setItem("token", response.data.token); // Save JWT token
-
-      // Redirect to dashboard after successful login
-      navigate("/dashboard");
+      navigate("/dashboard"); // Redirect to dashboard
     } catch (error) {
-      console.error("Login Failed:", error.response?.data?.message || error.message);
       setError(error.response?.data?.message || "An error occurred");
     }
   };
@@ -40,6 +36,7 @@ const Login = () => {
           value={formData.email}
           onChange={handleChange}
           style={styles.input}
+          required
         />
         <input
           type="password"
@@ -48,18 +45,19 @@ const Login = () => {
           value={formData.password}
           onChange={handleChange}
           style={styles.input}
+          required
         />
         {error && <p style={styles.error}>{error}</p>}
         <button type="submit" style={styles.button}>
           Login
         </button>
       </form>
+      <p style={styles.footerText}>
+        New user? <a href="/register" style={styles.link}>Sign up here</a>
+      </p>
     </div>
   );
 };
-
-
-
 
 const styles = {
   container: {
@@ -95,6 +93,13 @@ const styles = {
   error: {
     color: "red",
     fontSize: "0.9rem",
+  },
+  footerText: {
+    marginTop: "1rem",
+  },
+  link: {
+    color: "#007BFF",
+    textDecoration: "none",
   },
 };
 

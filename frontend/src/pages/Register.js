@@ -1,6 +1,7 @@
+// Register.js
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/api";
-
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const Register = () => {
     password: "",
   });
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,8 +19,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await registerUser(formData);
+      await registerUser(formData);
       alert("Registration successful!");
+      navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
     }
@@ -35,6 +38,7 @@ const Register = () => {
           value={formData.name}
           onChange={handleChange}
           style={styles.input}
+          required
         />
         <input
           type="email"
@@ -43,6 +47,7 @@ const Register = () => {
           value={formData.email}
           onChange={handleChange}
           style={styles.input}
+          required
         />
         <input
           type="password"
@@ -51,12 +56,16 @@ const Register = () => {
           value={formData.password}
           onChange={handleChange}
           style={styles.input}
+          required
         />
         {error && <p style={styles.error}>{error}</p>}
         <button type="submit" style={styles.button}>
           Register
         </button>
       </form>
+      <p style={styles.footerText}>
+        Already registered? <a href="/login" style={styles.link}>Login here</a>
+      </p>
     </div>
   );
 };
@@ -95,6 +104,13 @@ const styles = {
   error: {
     color: "red",
     fontSize: "0.9rem",
+  },
+  footerText: {
+    marginTop: "1rem",
+  },
+  link: {
+    color: "#007BFF",
+    textDecoration: "none",
   },
 };
 
